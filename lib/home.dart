@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:geosafe/database_operations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kdgaugeview/kdgaugeview.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -19,7 +20,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   NotificationApi notificationApi = NotificationApi();
   GlobalKey<KdGaugeViewState> speed = GlobalKey<KdGaugeViewState>();
+  DatabaseService databaseService = DatabaseService();
   double temp = 0.0;
+  int? speedLimit;
 
   void decrease() {
     if (temp > 0) {
@@ -45,22 +48,6 @@ class _HomePageState extends State<HomePage> {
             'Overspeeding detected', 'Current speed ${temp.toInt()} km/h');
       }
     }
-  }
-
-  void on() async {
-    FirebaseDatabase database = FirebaseDatabase.instance;
-    DatabaseReference ref = database.ref();
-    await ref.set({
-      "MSG": "1",
-    });
-  }
-
-  void off() async {
-    FirebaseDatabase database = FirebaseDatabase.instance;
-    DatabaseReference ref = database.ref();
-    await ref.set({
-      "MSG": "0",
-    });
   }
 
   @override
@@ -107,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Welcome back, ',
+                          'Welcome back,',
                           style: GoogleFonts.chakraPetch(
                             fontSize: 30,
                             color: Colors.white,
@@ -207,7 +194,9 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       onChanged: (bool state) {
-                        (state) ? on() : off();
+                        (state)
+                            ? databaseService.turnOn()
+                            : databaseService.turnOff();
                       },
                     ),
                   ],

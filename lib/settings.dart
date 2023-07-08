@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:geosafe/bottomnavigationbar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:switcher_button/switcher_button.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'database_operations.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -13,7 +15,22 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  DatabaseService databaseService = DatabaseService();
   int _itemCount = 0;
+
+  @override
+  void initState() {
+    fetchData();
+    super.initState();
+  }
+
+  void fetchData() async {
+    var temp = await databaseService.fetchSpeedLimit();
+    setState(() {
+      _itemCount = temp;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,9 +100,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         buildTileSwitch(1, Icons.settings, 'Setting 1'),
                         buildTileSwitch(2, Icons.settings, 'Setting 2'),
                         buildTileSwitch(3, Icons.settings, 'Setting 3'),
-                        buildTileStepper(7, Icons.settings, 'Setting 7'),
-                        buildTileStepper(8, Icons.settings, 'Setting 8'),
-                        buildTileStepper(9, Icons.settings, 'Setting 9'),
+                        buildTileStepper(4, Icons.speed_sharp, 'Speed Limit'),
                       ],
                     ),
                   ),
@@ -115,16 +130,16 @@ class _SettingsPageState extends State<SettingsPage> {
         onChange: (value) {
           switch (index) {
             case 1:
-              print('1st Tile clicked');
+              debugPrint('1st Tile clicked');
               // showDialog<Dialog>(
               //     context: context,
               //     builder: (BuildContext context) => DialogFb1());
               break;
             case 2:
-              print('2nd Tile clicked');
+              debugPrint('2nd Tile clicked');
               break;
             case 3:
-              print('3rd Tile clicked');
+              debugPrint('3rd Tile clicked');
               break;
           }
         },
@@ -151,23 +166,23 @@ class _SettingsPageState extends State<SettingsPage> {
                     Icons.remove,
                     color: Colors.white38,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     setState(() => _itemCount -= 10);
-                    print(_itemCount);
+                    databaseService.updateSpeedLimit(_itemCount);
                   },
                 )
               : Container(),
           Text(
             _itemCount.toString(),
             style: GoogleFonts.chakraPetch(
-              color: Colors.white38,
+              color: Colors.white,
             ),
           ),
           IconButton(
             icon: const Icon(Icons.add, color: Colors.white38),
-            onPressed: () {
+            onPressed: () async {
               setState(() => _itemCount += 10);
-              print(_itemCount);
+              databaseService.updateSpeedLimit(_itemCount);
             },
           )
         ],
