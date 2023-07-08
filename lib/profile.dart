@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:geosafe/bottomnavigationbar.dart';
 import 'dart:ui';
+
+import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -10,6 +15,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  File? _image;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,17 +43,58 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
           ),
-          const SafeArea(
+          SafeArea(
             child: Column(
-              // mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Text(
+                  "Edit Profile",
+                  style: GoogleFonts.chakraPetch(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
                 Stack(
+                  alignment: Alignment.topRight,
                   children: [
                     CircleAvatar(
-                      backgroundColor: Colors.amber,
-                      radius: 50,
+                      radius: 65,
+                      backgroundColor: Colors.white,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 60,
+                        backgroundImage: (_image != null)
+                            ? Image.file(
+                                _image!,
+                                fit: BoxFit.cover,
+                              ).image
+                            : const AssetImage('assets/profile_picture.png'),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        final picker = ImagePicker();
+
+                        final pickedFile =
+                            await picker.pickImage(source: ImageSource.gallery);
+                        if (pickedFile != null) {
+                          setState(() {
+                            _image = File(pickedFile.path);
+                          });
+                        }
+                      },
+                      child: const CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Icon(
+                          Icons.edit,
+                          color: Color.fromARGB(255, 255, 87, 34),
+                        ),
+                      ),
                     )
                   ],
                 )

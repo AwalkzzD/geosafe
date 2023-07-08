@@ -7,7 +7,6 @@ import 'package:kdgaugeview/kdgaugeview.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geosafe/notification_services.dart';
 import 'package:geosafe/bottomnavigationbar.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:rolling_switch/rolling_switch.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,8 +18,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   NotificationApi notificationApi = NotificationApi();
-  GlobalKey<KdGaugeViewState> speed = GlobalKey<KdGaugeViewState>();
   DatabaseService databaseService = DatabaseService();
+  GlobalKey<KdGaugeViewState> speed = GlobalKey<KdGaugeViewState>();
   double temp = 0.0;
   int? speedLimit;
 
@@ -35,19 +34,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   void increase() async {
-    if (temp < 125) {
-      setState(() {
-        temp += 5;
-        speed.currentState!.updateSpeed(temp,
-            animate: true, duration: const Duration(milliseconds: 400));
-      });
-    }
-    if (temp > 100) {
+    setState(() {
+      temp += 5;
+      speed.currentState!.updateSpeed(temp,
+          animate: true, duration: const Duration(milliseconds: 400));
+    });
+
+    if (temp > speedLimit!) {
       if (await Permission.notification.request().isGranted) {
         notificationApi.sendNotification(
             'Overspeeding detected', 'Current speed ${temp.toInt()} km/h');
       }
     }
+  }
+
+  void fetchSpeedLimit() async {
+    speedLimit = await databaseService.fetchSpeedLimit();
   }
 
   @override
@@ -58,6 +60,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    fetchSpeedLimit();
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
