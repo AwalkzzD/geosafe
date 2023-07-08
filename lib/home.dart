@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Welcome back,',
+                          'Welcome back, ',
                           style: GoogleFonts.chakraPetch(
                             fontSize: 30,
                             color: Colors.white,
