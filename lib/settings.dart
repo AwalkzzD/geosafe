@@ -131,9 +131,6 @@ class _SettingsPageState extends State<SettingsPage> {
           switch (index) {
             case 1:
               debugPrint('1st Tile clicked');
-              // showDialog<Dialog>(
-              //     context: context,
-              //     builder: (BuildContext context) => DialogFb1());
               break;
             case 2:
               debugPrint('2nd Tile clicked');

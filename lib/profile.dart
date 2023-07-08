@@ -19,6 +19,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,
       extendBody: true,
       bottomNavigationBar: const BottomNavBarCurvedFb3(),
@@ -97,6 +98,90 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     )
                   ],
+                ),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(15, 50, 15, 0),
+                  child: Column(
+                    children: [
+                      TextField(
+                        cursorOpacityAnimates: true,
+                        style: GoogleFonts.chakraPetch(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w300,
+                            letterSpacing: 2),
+                        cursorColor: Colors.white54,
+                        decoration: InputDecoration(
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 1, color: Colors.white24),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                                width: 1.5, color: Colors.white70),
+                          ),
+                          labelText: 'Name',
+                          labelStyle: GoogleFonts.chakraPetch(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TextField(
+                        cursorOpacityAnimates: true,
+                        keyboardType: TextInputType.phone,
+                        style: GoogleFonts.chakraPetch(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w300,
+                            letterSpacing: 2),
+                        cursorColor: Colors.white54,
+                        decoration: InputDecoration(
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 1, color: Colors.white24),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                                width: 1.5, color: Colors.white70),
+                          ),
+                          labelText: 'Phone Number',
+                          labelStyle: GoogleFonts.chakraPetch(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TextField(
+                        cursorOpacityAnimates: true,
+                        keyboardType: TextInputType.emailAddress,
+                        style: GoogleFonts.chakraPetch(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w300,
+                            letterSpacing: 2),
+                        cursorColor: Colors.white54,
+                        decoration: InputDecoration(
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 1, color: Colors.white24),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                                width: 1.5, color: Colors.white70),
+                          ),
+                          labelText: 'Email',
+                          labelStyle: GoogleFonts.chakraPetch(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 )
               ],
             ),
