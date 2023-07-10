@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:geosafe/bottomnavigationbar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:switcher_button/switcher_button.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'database_operations.dart';
 
 class SettingsPage extends StatefulWidget {

@@ -6,6 +6,9 @@ import 'dart:ui';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'database_operations.dart';
+import 'package:geosafe/notification_services.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -15,7 +18,29 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  DatabaseService databaseService = DatabaseService();
+  NotificationApi notificationApi = NotificationApi();
   File? _image;
+  final nameController = TextEditingController(),
+      phoneController = TextEditingController(),
+      emailController = TextEditingController();
+
+  @override
+  void initState() {
+    notificationApi.initializeNotifications();
+    fetchData();
+    super.initState();
+  }
+
+  void fetchData() async {
+    Map map = await databaseService.fetchProfile();
+    setState(() {
+      nameController.text = map['NAME'];
+      phoneController.text = map['PHONE NUM'];
+      emailController.text = map['EMAIL'];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,6 +129,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Column(
                     children: [
                       TextField(
+                        controller: nameController,
                         cursorOpacityAnimates: true,
                         style: GoogleFonts.chakraPetch(
                             color: Colors.white,
@@ -111,6 +137,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             letterSpacing: 2),
                         cursorColor: Colors.white54,
                         decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.person),
+                          prefixIconColor: Colors.white,
                           enabledBorder: const OutlineInputBorder(
                             borderSide:
                                 BorderSide(width: 1, color: Colors.white24),
@@ -126,18 +154,24 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       TextField(
+                        controller: phoneController,
                         cursorOpacityAnimates: true,
                         keyboardType: TextInputType.phone,
+                        maxLength: 10,
+                        autocorrect: true,
                         style: GoogleFonts.chakraPetch(
                             color: Colors.white,
                             fontWeight: FontWeight.w300,
                             letterSpacing: 2),
                         cursorColor: Colors.white54,
                         decoration: InputDecoration(
+                          counterText: "",
+                          prefixIcon: const Icon(Icons.phone),
+                          prefixIconColor: Colors.white,
                           enabledBorder: const OutlineInputBorder(
                             borderSide:
                                 BorderSide(width: 1, color: Colors.white24),
@@ -153,10 +187,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       TextField(
+                        controller: emailController,
                         cursorOpacityAnimates: true,
                         keyboardType: TextInputType.emailAddress,
                         style: GoogleFonts.chakraPetch(
@@ -165,6 +200,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             letterSpacing: 2),
                         cursorColor: Colors.white54,
                         decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.email_outlined),
+                          prefixIconColor: Colors.white,
                           enabledBorder: const OutlineInputBorder(
                             borderSide:
                                 BorderSide(width: 1, color: Colors.white24),
@@ -177,6 +214,37 @@ class _ProfilePageState extends State<ProfilePage> {
                           labelText: 'Email',
                           labelStyle: GoogleFonts.chakraPetch(
                             color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.fromLTRB(70, 10, 70, 10),
+                          backgroundColor: Colors.transparent,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                              side: const BorderSide(
+                                color: Colors.white,
+                              ),
+                              borderRadius: BorderRadius.circular(5)),
+                        ),
+                        onPressed: () async {
+                          databaseService.updateProfile(nameController.text,
+                              phoneController.text, emailController.text);
+                          if (await Permission.notification
+                              .request()
+                              .isGranted) {
+                            notificationApi.sendNotification('Successfull!...',
+                                'Your profile was updated successfully');
+                          }
+                        },
+                        child: Text(
+                          'Update',
+                          style: GoogleFonts.chakraPetch(
+                            fontSize: 20,
                           ),
                         ),
                       ),

@@ -8,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:geosafe/notification_services.dart';
 import 'package:geosafe/bottomnavigationbar.dart';
 import 'package:rolling_switch/rolling_switch.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   GlobalKey<KdGaugeViewState> speed = GlobalKey<KdGaugeViewState>();
   double temp = 0.0;
   int? speedLimit;
+  bool engineStatus = false;
 
   void decrease() {
     if (temp > 0) {
@@ -174,7 +176,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     RollingSwitch.icon(
                       circularColor: Colors.white,
-                      initialState: false,
+                      initialState: engineStatus,
                       rollingInfoRight: RollingIconInfo(
                         icon: Icons.car_rental_outlined,
                         text: Text(

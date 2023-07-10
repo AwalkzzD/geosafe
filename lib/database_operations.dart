@@ -5,9 +5,11 @@ class DatabaseService {
     try {
       FirebaseDatabase database = FirebaseDatabase.instance;
       DatabaseReference ref = database.ref();
-      await ref.update({
-        "SPEED LIMIT": speed,
-      });
+      await ref.update(
+        {
+          "SPEED LIMIT": speed,
+        },
+      );
     } catch (e) {
       return 1;
     }
@@ -27,19 +29,64 @@ class DatabaseService {
     }
   }
 
+  Future<int> fetchEngineStatus() async {
+    try {
+      FirebaseDatabase database = FirebaseDatabase.instance;
+      DatabaseReference ref = database.ref();
+
+      DatabaseEvent databaseEvent = await ref.once();
+      Map map = databaseEvent.snapshot.value as Map;
+
+      return map['MSG'];
+    } catch (e) {
+      return 9999;
+    }
+  }
+
   Future turnOn() async {
     FirebaseDatabase database = FirebaseDatabase.instance;
     DatabaseReference ref = database.ref();
-    await ref.update({
-      "MSG": "1",
-    });
+    await ref.update(
+      {
+        "MSG": "1",
+      },
+    );
   }
 
   Future turnOff() async {
     FirebaseDatabase database = FirebaseDatabase.instance;
     DatabaseReference ref = database.ref();
-    await ref.update({
-      "MSG": "0",
-    });
+    await ref.update(
+      {
+        "MSG": "0",
+      },
+    );
+  }
+
+  Future updateProfile(String name, String phoneNum, String email) async {
+    FirebaseDatabase database = FirebaseDatabase.instance;
+    DatabaseReference ref = database.ref();
+    await ref.update(
+      {
+        "NAME": name,
+        "PHONE NUM": phoneNum,
+        "EMAIL": email,
+      },
+    );
+  }
+
+  Future<Map> fetchProfile() async {
+    Map map = {};
+    try {
+      FirebaseDatabase database = FirebaseDatabase.instance;
+      DatabaseReference ref = database.ref();
+
+      DatabaseEvent databaseEvent = await ref.once();
+      map = databaseEvent.snapshot.value as Map;
+
+      return map;
+    } catch (e) {
+      return map;
+    }
   }
 }
