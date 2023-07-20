@@ -8,7 +8,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:geosafe/notification_services.dart';
 import 'package:geosafe/bottomnavigationbar.dart';
 import 'package:rolling_switch/rolling_switch.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
