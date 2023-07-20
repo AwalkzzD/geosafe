@@ -16,6 +16,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   DatabaseService databaseService = DatabaseService();
   int _itemCount = 0;
+  String? username;
 
   @override
   void initState() {
@@ -27,6 +28,11 @@ class _SettingsPageState extends State<SettingsPage> {
     var temp = await databaseService.fetchSpeedLimit();
     setState(() {
       _itemCount = temp;
+    });
+
+    Map map = await databaseService.fetchProfile();
+    setState(() {
+      username = map['NAME'];
     });
   }
 
@@ -75,7 +81,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       ),
                       Text(
-                        'Devarshi',
+                        username ?? 'User',
                         style: GoogleFonts.chakraPetch(
                           fontSize: 20,
                           color: Colors.white,

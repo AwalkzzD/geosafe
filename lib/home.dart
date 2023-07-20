@@ -2,12 +2,13 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:geosafe/database_operations.dart';
+import 'package:geosafe/location.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kdgaugeview/kdgaugeview.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:geosafe/notification_services.dart';
 import 'package:geosafe/bottomnavigationbar.dart';
 import 'package:rolling_switch/rolling_switch.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -23,30 +24,45 @@ class _HomePageState extends State<HomePage> {
   double temp = 0.0;
   int? speedLimit;
   bool engineStatus = false;
+  String? username;
 
-  void decrease() {
-    if (temp > 0) {
+  // void decrease() {
+  //   if (temp > 0) {
+  //     setState(() {
+  //       temp -= 5;
+  //       speed.currentState!.updateSpeed(temp,
+  //           animate: true, duration: const Duration(milliseconds: 400));
+  //     });
+  //   }
+  // }
+
+  // void increase() async {
+  //   setState(() {
+  //     temp += 5;
+  //     speed.currentState!.updateSpeed(temp,
+  //         animate: true, duration: const Duration(milliseconds: 400));
+  //   });
+
+  //   if (temp > speedLimit!) {
+  //     if (await Permission.notification.request().isGranted) {
+  //       notificationApi.sendNotification(
+  //           'Overspeeding detected', 'Current speed ${temp.toInt()} km/h');
+  //     }
+  //   }
+  // }
+
+  void fetchSpeed() async {
+    DatabaseReference databaseReference = FirebaseDatabase.instance.ref();
+    databaseReference.onValue.listen((DatabaseEvent event) {
+      final data = Map<String, dynamic>.from(event.snapshot.value as Map);
       setState(() {
-        temp -= 5;
+        temp = data['CURRENT SPEED'] as double;
         speed.currentState!.updateSpeed(temp,
             animate: true, duration: const Duration(milliseconds: 400));
+        var temp1 = data['NAME'] as String;
+        username = temp1;
       });
-    }
-  }
-
-  void increase() async {
-    setState(() {
-      temp += 5;
-      speed.currentState!.updateSpeed(temp,
-          animate: true, duration: const Duration(milliseconds: 400));
     });
-
-    if (temp > speedLimit!) {
-      if (await Permission.notification.request().isGranted) {
-        notificationApi.sendNotification(
-            'Overspeeding detected', 'Current speed ${temp.toInt()} km/h');
-      }
-    }
   }
 
   void fetchSpeedLimit() async {
@@ -56,6 +72,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     notificationApi.initializeNotifications();
+    fetchSpeed();
+
     super.initState();
   }
 
@@ -105,7 +123,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         Text(
-                          'Devarshi',
+                          username ?? 'User',
+                          // 'Devarshi',
                           style: GoogleFonts.chakraPetch(
                             fontSize: 20,
                             color: Colors.white,
@@ -155,23 +174,26 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                     ),
-                    OutlinedButton(
-                      onPressed: () => increase(),
-                      child: Text(
-                        'Increase Speed',
-                        style: GoogleFonts.chakraPetch(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    OutlinedButton(
-                      onPressed: () => decrease(),
-                      child: Text(
-                        'Decrease Speed',
-                        style: GoogleFonts.chakraPetch(
-                          color: Colors.white,
-                        ),
-                      ),
+                    // OutlinedButton(
+                    //   onPressed: () => increase(),
+                    //   child: Text(
+                    //     'Increase Speed',
+                    //     style: GoogleFonts.chakraPetch(
+                    //       color: Colors.white,
+                    //     ),
+                    //   ),
+                    // ),
+                    // OutlinedButton(
+                    //   onPressed: () => decrease(),
+                    //   child: Text(
+                    //     'Decrease Speed',
+                    //     style: GoogleFonts.chakraPetch(
+                    //       color: Colors.white,
+                    //     ),
+                    //   ),
+                    // ),
+                    const SizedBox(
+                      height: 30,
                     ),
                     RollingSwitch.icon(
                       circularColor: Colors.white,
@@ -202,6 +224,30 @@ class _HomePageState extends State<HomePage> {
                             ? databaseService.turnOn()
                             : databaseService.turnOff();
                       },
+                    ),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                          side: const BorderSide(
+                              width: 1.4, color: Colors.white60)),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const ViewLocation()));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Text(
+                          'Find My Car',
+                          style: GoogleFonts.chakraPetch(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),

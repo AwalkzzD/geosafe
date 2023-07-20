@@ -29,7 +29,7 @@ class DatabaseService {
     }
   }
 
-  Future<int> fetchEngineStatus() async {
+  Future<String> fetchEngineStatus() async {
     try {
       FirebaseDatabase database = FirebaseDatabase.instance;
       DatabaseReference ref = database.ref();
@@ -39,7 +39,7 @@ class DatabaseService {
 
       return map['MSG'];
     } catch (e) {
-      return 9999;
+      return '0';
     }
   }
 

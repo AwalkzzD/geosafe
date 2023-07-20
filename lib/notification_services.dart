@@ -16,13 +16,16 @@ class NotificationApi {
 
   void sendNotification(String title, String body) async {
     const AndroidNotificationDetails androidNotificationDetails =
-        AndroidNotificationDetails('channelId', 'channelName',
-            playSound: true,
-            enableLights: true,
-            enableVibration: true,
-            importance: Importance.max,
-            priority: Priority.high,
-            autoCancel: true);
+        AndroidNotificationDetails(
+      'channelId',
+      'channelName',
+      playSound: true,
+      enableLights: true,
+      enableVibration: true,
+      importance: Importance.max,
+      priority: Priority.high,
+      autoCancel: true,
+    );
     const NotificationDetails notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
     await flutterLocalNotificationsPlugin.show(
