@@ -1,6 +1,6 @@
 # geosafe
 
-A new Flutter project.
+A FLutter Project not just limited to vehicle tracking and safety but much more.
 
 ## Getting Started
 
